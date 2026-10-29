@@ -5,8 +5,9 @@ from __future__ import annotations
 import json
 import logging
 import os
-import urllib.request
 import urllib.error
+import urllib.request
+
 from precog_council.backends.base import BaseBackend
 
 logger = logging.getLogger("precog_council.backends.direct_api")
@@ -81,9 +82,7 @@ class DirectApiBackend(BaseBackend):
 
         url = f"https://generativelanguage.googleapis.com/v1beta/models/{resolved}:generateContent?key={api_key}"
         headers = {"content-type": "application/json"}
-        payload = {
-            "contents": [{"parts": [{"text": prompt}]}]
-        }
+        payload = {"contents": [{"parts": [{"text": prompt}]}]}
 
         req = urllib.request.Request(url, data=json.dumps(payload).encode("utf-8"), headers=headers, method="POST")
         try:

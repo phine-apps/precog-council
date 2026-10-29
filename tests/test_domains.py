@@ -1,7 +1,6 @@
 """Tests for precog domain presets and role resolution."""
 
-import pytest
-from precog_council.domains import get_domain_preset, DomainPreset, PrecogRoleConfig
+from precog_council.domains import DomainPreset, get_domain_preset
 
 
 def test_get_builtin_domains():
@@ -22,11 +21,7 @@ def test_code_domain_roles():
 
 
 def test_custom_domain_override():
-    custom = {
-        "agatha": "Database Performance",
-        "arthur": "Data Leakage & GDPR",
-        "dashiell": "Developer Ergonomics"
-    }
+    custom = {"agatha": "Database Performance", "arthur": "Data Leakage & GDPR", "dashiell": "Developer Ergonomics"}
     preset = get_domain_preset("custom", custom_roles=custom)
     roles = {p.name: p.role for p in preset.precogs}
     assert roles["Agatha"] == "Database Performance"

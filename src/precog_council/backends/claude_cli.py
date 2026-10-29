@@ -5,6 +5,7 @@ from __future__ import annotations
 import logging
 import subprocess
 from typing import List
+
 from precog_council.backends.base import BaseBackend
 
 logger = logging.getLogger("precog_council.backends.claude_cli")
@@ -28,12 +29,7 @@ class ClaudeCliBackend(BaseBackend):
     def query(self, model: str, prompt: str, timeout: int = 90) -> str:
         cmd = self.build_command(model, prompt)
         try:
-            proc = subprocess.run(
-                cmd,
-                capture_output=True,
-                text=True,
-                timeout=timeout
-            )
+            proc = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout)
             if proc.returncode == 0:
                 return proc.stdout
             else:

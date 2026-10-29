@@ -5,7 +5,6 @@ from __future__ import annotations
 import os
 import shutil
 from abc import ABC, abstractmethod
-from typing import Optional
 
 
 class BaseBackend(ABC):

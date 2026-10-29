@@ -1,14 +1,10 @@
 """Tests for core council voting, aggregation, and veto mechanism."""
 
-import pytest
 from precog_council.council import (
     PrecogResult,
-    CouncilVerdict,
     aggregate_precog_votes,
-    build_precog_prompt,
     parse_model_response,
 )
-from precog_council.domains import get_domain_preset
 
 
 def test_aggregate_unanimous():
@@ -25,7 +21,15 @@ def test_aggregate_unanimous():
 
 def test_aggregate_split_with_minority():
     r1 = PrecogResult(id="precog_a", name="Agatha", model="m1", role="Role A", decision="ADOPT", confidence=0.8)
-    r2 = PrecogResult(id="precog_b", name="Arthur", model="m2", role="Security Auditor", decision="REJECT", confidence=0.95, risk_factors=["SQL Injection"])
+    r2 = PrecogResult(
+        id="precog_b",
+        name="Arthur",
+        model="m2",
+        role="Security Auditor",
+        decision="REJECT",
+        confidence=0.95,
+        risk_factors=["SQL Injection"],
+    )
     r3 = PrecogResult(id="precog_c", name="Dashiell", model="m3", role="Role C", decision="ADOPT", confidence=0.7)
 
     verdict = aggregate_precog_votes([r1, r2, r3], topic="Test", veto_roles=[])
@@ -38,7 +42,15 @@ def test_aggregate_split_with_minority():
 
 def test_aggregate_veto_override():
     r1 = PrecogResult(id="precog_a", name="Agatha", model="m1", role="Role A", decision="ADOPT", confidence=0.8)
-    r2 = PrecogResult(id="precog_b", name="Arthur", model="m2", role="Security Auditor", decision="REJECT", confidence=0.95, risk_factors=["Exploit"])
+    r2 = PrecogResult(
+        id="precog_b",
+        name="Arthur",
+        model="m2",
+        role="Security Auditor",
+        decision="REJECT",
+        confidence=0.95,
+        risk_factors=["Exploit"],
+    )
     r3 = PrecogResult(id="precog_c", name="Dashiell", model="m3", role="Role C", decision="ADOPT", confidence=0.7)
 
     # Arthur has veto power

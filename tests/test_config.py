@@ -1,9 +1,6 @@
 """Tests for precog.yaml configuration loader."""
 
-import pytest
-import yaml
-from pathlib import Path
-from precog_council.config import load_precog_config, PrecogConfig
+from precog_council.config import PrecogConfig, load_precog_config
 
 
 def test_load_default_config_when_file_missing(tmp_path):

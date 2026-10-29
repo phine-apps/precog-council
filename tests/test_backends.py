@@ -1,10 +1,9 @@
 """Tests for model execution backends and auto-detection."""
 
-import pytest
-import shutil
-from unittest.mock import patch, MagicMock
-from precog_council.backends.base import detect_best_backend, BaseBackend
+from unittest.mock import patch
+
 from precog_council.backends.agy import AgyBackend
+from precog_council.backends.base import detect_best_backend
 from precog_council.backends.claude_cli import ClaudeCliBackend
 
 

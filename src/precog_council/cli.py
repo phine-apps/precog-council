@@ -6,7 +6,7 @@ import argparse
 import json
 import sys
 from pathlib import Path
-from typing import Dict, Optional
+from typing import Dict
 
 from rich import box
 from rich.console import Console
@@ -44,14 +44,10 @@ def render_tui_verdict(verdict: CouncilVerdict) -> None:
     table.add_column("Confidence", justify="right")
 
     for r in verdict.results:
-        vote_text = Text("🟢 ADOPT", style="bold green") if r.decision == "ADOPT" else Text("🔴 REJECT", style="bold red")
-        table.add_row(
-            r.name,
-            r.model,
-            r.role,
-            vote_text,
-            f"{r.confidence:.0%}"
+        vote_text = (
+            Text("🟢 ADOPT", style="bold green") if r.decision == "ADOPT" else Text("🔴 REJECT", style="bold red")
         )
+        table.add_row(r.name, r.model, r.role, vote_text, f"{r.confidence:.0%}")
 
     console.print(table)
     console.print()
@@ -84,36 +80,47 @@ def render_tui_verdict(verdict: CouncilVerdict) -> None:
             alert_body.append(f"  • {rf}\n", style="white")
 
         alert_body.append(f"\n📝 DISSENT REASONING:\n{mr.reasoning}\n\n", style="italic")
-        alert_body.append("👉 ACTION REQUIRED: Do not proceed without evaluating the minority dissent above.", style="bold yellow")
+        alert_body.append(
+            "👉 ACTION REQUIRED: Do not proceed without evaluating the minority dissent above.", style="bold yellow"
+        )
 
-        console.print(Panel(
-            alert_body,
-            title="[bold red]🚨 MINORITY REPORT DETECTED (2 vs 1 SPLIT) 🚨[/bold red]",
-            border_style="bold red",
-            box=box.HEAVY
-        ))
+        console.print(
+            Panel(
+                alert_body,
+                title="[bold red]🚨 MINORITY REPORT DETECTED (2 vs 1 SPLIT) 🚨[/bold red]",
+                border_style="bold red",
+                box=box.HEAVY,
+            )
+        )
         console.print()
     elif not verdict.is_vetoed:
-        console.print("[dim green]🕊️ Unanimous consensus achieved across all 3 precogs. No minority dissent recorded.[/dim green]\n")
+        console.print(
+            "[dim green]🕊️ Unanimous consensus achieved across all 3 precogs. No minority dissent recorded.[/dim green]\n"
+        )
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(
-        prog="precog",
-        description="Precog Council: Multi-Model Voting & Minority Report Orchestration"
+        prog="precog", description="Precog Council: Multi-Model Voting & Minority Report Orchestration"
     )
     parser.add_argument("topic", type=str, help="Topic, feature, or proposal to evaluate")
     parser.add_argument("--context", type=str, default="", help="Inline context, formula, or diff")
     parser.add_argument("--file", "-f", type=str, default=None, help="File containing context or code")
     parser.add_argument(
-        "--domain", "-d", type=str, default=None,
+        "--domain",
+        "-d",
+        type=str,
+        default=None,
         choices=["code", "architecture", "business", "feature", "general"],
-        help="Analytical domain preset (default: from precog.yaml or general)"
+        help="Analytical domain preset (default: from precog.yaml or general)",
     )
     parser.add_argument(
-        "--backend", "-b", type=str, default=None,
+        "--backend",
+        "-b",
+        type=str,
+        default=None,
         choices=["auto", "direct", "claude", "agy"],
-        help="Model execution backend"
+        help="Model execution backend",
     )
     parser.add_argument("--model", type=str, default=None, help="Unified model for all 3 precogs (Inherit mode)")
     parser.add_argument("--model-a", type=str, default=None, help="Model for Precog Agatha")
@@ -167,7 +174,7 @@ def main() -> None:
                 models=models,
                 default_model=default_model,
                 veto_roles=cfg.veto_roles,
-                timeout=timeout
+                timeout=timeout,
             )
         render_tui_verdict(verdict)
     else:
@@ -179,45 +186,53 @@ def main() -> None:
             models=models,
             default_model=default_model,
             veto_roles=cfg.veto_roles,
-            timeout=timeout
+            timeout=timeout,
         )
         if output_format == "markdown":
             print(verdict.to_markdown())
         elif output_format == "json":
-            print(json.dumps({
-                "topic": verdict.topic,
-                "domain": verdict.domain,
-                "majority_decision": verdict.majority_decision,
-                "final_decision": verdict.final_decision,
-                "vote_count": verdict.vote_count,
-                "is_unanimous": verdict.is_unanimous,
-                "is_vetoed": verdict.is_vetoed,
-                "veto_reason": verdict.veto_reason,
-                "consensus_score": verdict.consensus_score,
-                "results": [
+            print(
+                json.dumps(
                     {
-                        "id": r.id,
-                        "name": r.name,
-                        "model": r.model,
-                        "role": r.role,
-                        "decision": r.decision,
-                        "confidence": r.confidence,
-                        "key_points": r.key_points,
-                        "risk_factors": r.risk_factors,
-                        "reasoning": r.reasoning
-                    }
-                    for r in verdict.results
-                ],
-                "minority_report": {
-                    "name": verdict.minority_report.name,
-                    "model": verdict.minority_report.model,
-                    "role": verdict.minority_report.role,
-                    "decision": verdict.minority_report.decision,
-                    "confidence": verdict.minority_report.confidence,
-                    "risk_factors": verdict.minority_report.risk_factors,
-                    "reasoning": verdict.minority_report.reasoning
-                } if verdict.minority_report else None
-            }, indent=2, ensure_ascii=False))
+                        "topic": verdict.topic,
+                        "domain": verdict.domain,
+                        "majority_decision": verdict.majority_decision,
+                        "final_decision": verdict.final_decision,
+                        "vote_count": verdict.vote_count,
+                        "is_unanimous": verdict.is_unanimous,
+                        "is_vetoed": verdict.is_vetoed,
+                        "veto_reason": verdict.veto_reason,
+                        "consensus_score": verdict.consensus_score,
+                        "results": [
+                            {
+                                "id": r.id,
+                                "name": r.name,
+                                "model": r.model,
+                                "role": r.role,
+                                "decision": r.decision,
+                                "confidence": r.confidence,
+                                "key_points": r.key_points,
+                                "risk_factors": r.risk_factors,
+                                "reasoning": r.reasoning,
+                            }
+                            for r in verdict.results
+                        ],
+                        "minority_report": {
+                            "name": verdict.minority_report.name,
+                            "model": verdict.minority_report.model,
+                            "role": verdict.minority_report.role,
+                            "decision": verdict.minority_report.decision,
+                            "confidence": verdict.minority_report.confidence,
+                            "risk_factors": verdict.minority_report.risk_factors,
+                            "reasoning": verdict.minority_report.reasoning,
+                        }
+                        if verdict.minority_report
+                        else None,
+                    },
+                    indent=2,
+                    ensure_ascii=False,
+                )
+            )
 
 
 if __name__ == "__main__":

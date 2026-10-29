@@ -18,6 +18,7 @@ logger = logging.getLogger("precog_council.council")
 @dataclass
 class PrecogResult:
     """Individual ballot and analysis from a single precog."""
+
     id: str
     name: str
     model: str
@@ -33,6 +34,7 @@ class PrecogResult:
 @dataclass
 class CouncilVerdict:
     """Final synthesis and report from the Precog Council."""
+
     topic: str
     domain: str
     majority_decision: str
@@ -47,23 +49,27 @@ class CouncilVerdict:
 
     def to_markdown(self) -> str:
         """Render a clean GitHub Flavored Markdown report."""
-        unanimous_badge = "🕊️ **満場一致 (Unanimous Consensus)**" if self.is_unanimous else "⚖️ **意見分裂 (Majority Consensus 2 vs 1)**"
+        unanimous_badge = (
+            "🕊️ **満場一致 (Unanimous Consensus)**"
+            if self.is_unanimous
+            else "⚖️ **意見分裂 (Majority Consensus 2 vs 1)**"
+        )
         decision_badge = "🟢 **ADOPT (採用推奨)**" if self.final_decision == "ADOPT" else "🔴 **REJECT (見送り推奨)**"
 
         md = [
-            f"# 🏛️ Precog Council 審査レポート",
-            f"",
+            "# 🏛️ Precog Council 審査レポート",
+            "",
             f"**審査対象 (Topic)**: {self.topic}",
             f"**審査ドメイン (Domain)**: `{self.domain}`",
-            f"",
-            f"### 1. 総合評決 (Council Verdict)",
+            "",
+            "### 1. 総合評決 (Council Verdict)",
             f"* **最終判断**: {decision_badge}" + (" ⚠️ *(VETO 拒絶権発動)*" if self.is_vetoed else ""),
             f"* **合議状況**: {unanimous_badge} (ADOPT: {self.vote_count.get('ADOPT', 0)} 票 / REJECT: {self.vote_count.get('REJECT', 0)} 票)",
             f"* **合意確信度 (Consensus Score)**: {self.consensus_score:.1%}",
-            f"",
-            f"### 2. 各プリコグの個別投票 (Individual Ballots)",
-            f"| プリコグ | モデル | 担当ロール (検証レンズ) | 判定 | 確信度 |",
-            f"| :--- | :--- | :--- | :---: | :---: |"
+            "",
+            "### 2. 各プリコグの個別投票 (Individual Ballots)",
+            "| プリコグ | モデル | 担当ロール (検証レンズ) | 判定 | 確信度 |",
+            "| :--- | :--- | :--- | :---: | :---: |",
         ]
 
         for r in self.results:
@@ -89,8 +95,10 @@ class CouncilVerdict:
         if self.is_vetoed and self.veto_reason:
             md.append("---")
             md.append("## ⛔ 【拒絶権発動】Veto Override")
-            md.append(f"> [!CAUTION] **指定ロールによる拒絶権（VETO）が行使されました**")
-            md.append(f"> 多数決は `{self.majority_decision}` でしたが、{self.veto_reason} により最終判断は `REJECT` に上書きされました。")
+            md.append("> [!CAUTION] **指定ロールによる拒絶権（VETO）が行使されました**")
+            md.append(
+                f"> 多数決は `{self.majority_decision}` でしたが、{self.veto_reason} により最終判断は `REJECT` に上書きされました。"
+            )
             md.append("")
 
         if self.minority_report:
@@ -98,21 +106,29 @@ class CouncilVerdict:
             md.append("---")
             md.append("## 🚨 【最重要】マイノリティ・リポート (Minority Report)")
             md.append(f"> [!WARNING] **少数派予知者 {mr.name} (`{mr.model}`) からの異論・警告**")
-            md.append(f"> 多数派（2名）が `{self.majority_decision}` と判定した一方、{mr.name} は `{mr.decision}`（確信度 {mr.confidence:.0%}）を主張しました。")
-            md.append(f"> 映画『マイノリティ・リポート』が示す通り、システムの破綻や致命的な盲点はしばしば少数意見の中に潜んでいます。")
+            md.append(
+                f"> 多数派（2名）が `{self.majority_decision}` と判定した一方、{mr.name} は `{mr.decision}`（確信度 {mr.confidence:.0%}）を主張しました。"
+            )
+            md.append(
+                "> 映画『マイノリティ・リポート』が示す通り、システムの破綻や致命的な盲点はしばしば少数意見の中に潜んでいます。"
+            )
             md.append("")
-            md.append(f"### ⚠️ 少数派が警告する致命的リスク要因:")
+            md.append("### ⚠️ 少数派が警告する致命的リスク要因:")
             for rf in mr.risk_factors:
                 md.append(f"1. **{rf}**")
             md.append("")
-            md.append(f"### 📝 少数派の論拠:")
+            md.append("### 📝 少数派の論拠:")
             md.append(f"> {mr.reasoning}")
             md.append("")
-            md.append("**👉 アクション推奨**: 次のステップに進む前に、上記マイノリティ・リポートの指摘に対する反証またはガードレールを確認してください。")
+            md.append(
+                "**👉 アクション推奨**: 次のステップに進む前に、上記マイノリティ・リポートの指摘に対する反証またはガードレールを確認してください。"
+            )
         elif not self.is_vetoed:
             md.append("---")
             md.append("## 🕊️ マイノリティ・リポートなし")
-            md.append("全3体のプリコグの見解が完全に一致しました。潜在的な論理の盲点や見落としリスクは極めて低いと推定されます。")
+            md.append(
+                "全3体のプリコグの見解が完全に一致しました。潜在的な論理の盲点や見落としリスクは極めて低いと推定されます。"
+            )
 
         return "\n".join(md)
 
@@ -147,7 +163,7 @@ def parse_model_response(raw_text: str, precog_id: str = "", model_name: str = "
                 key_points=data.get("key_points", []) or [],
                 risk_factors=data.get("risk_factors", []) or [],
                 reasoning=data.get("reasoning", data.get("summary", "")),
-                raw_response=clean_text
+                raw_response=clean_text,
             )
         except Exception:
             pass
@@ -170,16 +186,11 @@ def parse_model_response(raw_text: str, precog_id: str = "", model_name: str = "
         key_points=[],
         risk_factors=[],
         reasoning=clean_text[:500],
-        raw_response=clean_text
+        raw_response=clean_text,
     )
 
 
-def build_precog_prompt(
-    topic: str,
-    context: str,
-    domain: str,
-    precog: PrecogRoleConfig
-) -> str:
+def build_precog_prompt(topic: str, context: str, domain: str, precog: PrecogRoleConfig) -> str:
     """Construct an independent, role-specialized prompt for a single precog."""
     return f"""You are **{precog.name}**, one of the three Precognitives (Precogs) of the Precog Council.
 Your role: **{precog.role}**
@@ -221,10 +232,7 @@ Respond ONLY with a valid JSON block enclosed in ```json ... ```:
 
 
 def aggregate_precog_votes(
-    results: List[PrecogResult],
-    topic: str,
-    domain: str = "general",
-    veto_roles: Optional[List[str]] = None
+    results: List[PrecogResult], topic: str, domain: str = "general", veto_roles: Optional[List[str]] = None
 ) -> CouncilVerdict:
     """Aggregate ballots into a CouncilVerdict, isolating minority reports and enforcing vetoes."""
     veto_roles = veto_roles or []
@@ -268,7 +276,7 @@ def aggregate_precog_votes(
         veto_reason=veto_reason,
         results=results,
         minority_report=minority_report,
-        consensus_score=consensus_score
+        consensus_score=consensus_score,
     )
 
 
@@ -280,7 +288,7 @@ def run_council(
     models: Optional[Dict[str, str]] = None,
     default_model: str = "inherit",
     veto_roles: Optional[List[str]] = None,
-    timeout: int = 90
+    timeout: int = 90,
 ) -> CouncilVerdict:
     """Run all 3 precogs in parallel via backend and aggregate verdict."""
     models = models or {}
@@ -305,7 +313,7 @@ def run_council(
                 decision="REJECT",
                 confidence=0.50,
                 risk_factors=[f"Query error: {e}"],
-                reasoning=f"Failed to obtain response: {e}"
+                reasoning=f"Failed to obtain response: {e}",
             )
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=3) as executor:
@@ -314,9 +322,4 @@ def run_council(
             results.append(f.result())
 
     results.sort(key=lambda r: r.id)
-    return aggregate_precog_votes(
-        results=results,
-        topic=topic,
-        domain=domain_preset.name,
-        veto_roles=veto_roles
-    )
+    return aggregate_precog_votes(results=results, topic=topic, domain=domain_preset.name, veto_roles=veto_roles)

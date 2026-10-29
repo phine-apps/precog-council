@@ -2,16 +2,17 @@
 
 from __future__ import annotations
 
-import os
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Dict, List, Optional
+
 import yaml
 
 
 @dataclass
 class PrecogConfig:
     """Project-level or user-level configuration for Precog Council."""
+
     domain: str = "general"
     backend: str = "auto"  # auto, direct, claude, agy
     default_model: str = "inherit"
