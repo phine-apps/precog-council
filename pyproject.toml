@@ -1,0 +1,26 @@
+[project]
+name = "precog-council"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "phine-apps", email = "91043289+phine-apps@users.noreply.github.com" }
+]
+requires-python = ">=3.13"
+dependencies = [
+    "pyyaml>=6.0.1",
+    "rich>=13.7.0",
+]
+
+[project.scripts]
+precog = "precog_council.cli:main"
+precog-council = "precog_council.cli:main"
+
+[build-system]
+requires = ["uv_build>=0.13.6,<0.14.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "pytest>=9.2.0",
+]

@@ -1,0 +1,35 @@
+# Precog Council Configuration Example (precog.yaml / .precogrc)
+# Place this file in your repository root to configure team-wide evaluation rules.
+
+# Default analytical domain preset:
+# Available: code, architecture, business, feature, general
+domain: code
+
+# Execution backend:
+# Available: auto (default), direct (REST API), claude (Claude CLI), agy (Antigravity CLI)
+backend: auto
+
+# Default model when using Inherit mode (single model with 3 specialized roles)
+default_model: inherit
+
+# Optional: Override specific precog models (Heterogeneous mode)
+# model_a: gemini-4-argon-high
+# model_b: claude-opus-5-5-high
+# model_c: gemini-3.8-flash-high
+
+# Optional: Custom analytical roles (overrides default domain lenses)
+precogs:
+  agatha: "Algorithmic Efficiency & Concurrency Safety"
+  arthur: "Zero-Trust Security & Boundary Auditor"
+  dashiell: "Pragmatic Maintainability & Clean Code"
+
+# Veto Roles: If any precog with this role votes REJECT,
+# the final verdict is automatically overridden to REJECT even if majority is 2 vs 1.
+veto_roles:
+  - "Zero-Trust Security & Boundary Auditor"
+
+# Timeout per precog query in seconds
+timeout: 90
+
+# Default output format: rich (cyber TUI), markdown (for PR/CI), json
+format: rich
