@@ -48,7 +48,23 @@ When a 2-vs-1 split occurs, **Precog Council elevates the minority dissent as a 
 
 ## 🚀 Quick Start (Zero-Friction)
 
-### Run Instantly with `uvx` (No Installation Required)
+### Install as an Agent Skill (`gh skill` or `npx skills`)
+
+If you use AI coding agents like **Claude Code**, **Cursor**, or **GitHub Copilot**, install Precog Council directly as an Agent Skill:
+
+```bash
+# Via GitHub CLI (Official Agent Skills)
+gh skill install <your-github-username>/precog-council
+
+# Or via Vercel Labs Skills CLI
+npx skills add <your-github-username>/precog-council
+```
+
+Once installed, your AI agent can automatically invoke the 3-Precog Council whenever you ask:
+> *"Run precog council on this pull request"*  
+> *"プリコグ合議にかけてマイノリティ・リポートを出して"*
+
+### Run Instantly with `uvx` (CLI Standalone)
 
 ```bash
 # Code review of a diff or function

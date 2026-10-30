@@ -1,10 +1,34 @@
-# 🔌 Integration Guide: Claude Code, Antigravity & CI/CD
+# 🔌 Integration Guide: Agent Skills, Claude Code, Antigravity & CI/CD
 
 This guide walks through integrating **Precog Council** into your existing developer workflow across various environments.
 
 ---
 
-## 1. Claude Code Integration (`claude`)
+## 1. Universal Agent Skill Installation (`gh skill` & `npx skills`)
+
+Precog Council adheres to the open standard **Agent Skills specification** (`SKILL.md`). You can install it into any supported AI coding agent (Claude Code, Cursor, GitHub Copilot CLI, etc.) with a single command:
+
+### Via GitHub CLI (`gh skill`)
+```bash
+# Global user-level installation
+gh skill install <your-github-username>/precog-council --scope user
+
+# Or project-scoped installation
+gh skill install <your-github-username>/precog-council --scope project
+```
+
+### Via Vercel Labs Skills CLI (`npx skills`)
+```bash
+# Global installation
+npx skills add <your-github-username>/precog-council -g
+
+# Or local project installation
+npx skills add <your-github-username>/precog-council
+```
+
+---
+
+## 2. Claude Code Integration (`claude`)
 
 ### Option A: Custom Skill / Command
 Precog Council comes pre-bundled with `.claude/skills/precog-council.md`.
