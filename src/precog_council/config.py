@@ -23,6 +23,7 @@ class PrecogConfig:
     precog_roles: Dict[str, str] = field(default_factory=dict)
     veto_roles: List[str] = field(default_factory=list)
     format: str = "rich"  # rich, markdown, json
+    strict: bool = False  # Exit with code 1 if final decision is REJECT
 
 
 def find_config_file(explicit_path: Optional[Path] = None) -> Optional[Path]:
@@ -74,6 +75,7 @@ def load_precog_config(config_path: Optional[Path] = None) -> PrecogConfig:
             precog_roles=data.get("precogs", {}) or {},
             veto_roles=data.get("veto_roles", []) or [],
             format=data.get("format", "rich"),
+            strict=bool(data.get("strict", False)),
         )
     except Exception:
         return PrecogConfig()

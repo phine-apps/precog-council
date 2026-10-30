@@ -29,21 +29,40 @@ jobs:
 
       - name: Extract PR Git Diff
         run: |
-          git diff origin/${{ github.base_ref }}...HEAD > pr_diff.txt
+          # Capture diff and cap at 2000 lines to prevent token exhaustion / OOM
+          git diff origin/${{ github.base_ref }}...HEAD | head -n 2000 > pr_diff.txt
+
+      - name: Check Available API Keys
+        id: check_keys
+        env:
+          ANTHROPIC_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GEMINI_KEY: ${{ secrets.GEMINI_API_KEY }}
+          OPENAI_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          if [ -n "$ANTHROPIC_KEY" ] || [ -n "$GEMINI_KEY" ] || [ -n "$OPENAI_KEY" ]; then
+            echo "has_keys=true" >> $GITHUB_OUTPUT
+          else
+            echo "has_keys=false" >> $GITHUB_OUTPUT
+            echo "No LLM API keys provided (likely a fork PR). Skipping Precog Council arbitration."
+          fi
 
       - name: Run Precog Council Review
+        if: steps.check_keys.outputs.has_keys == 'true'
         id: precog
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
-          uvx precog-council "PR #${{ github.event.pull_request.number }}: ${{ github.event.pull_request.title }}" \
+          uvx precog-council "PR #${PR_NUMBER}: ${PR_TITLE}" \
             --file pr_diff.txt \
             --domain code \
             --format markdown > precog_report.md
 
       - name: Post Precog Report to PR
+        if: steps.check_keys.outputs.has_keys == 'true' && hashFiles('precog_report.md') != ''
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}

@@ -168,10 +168,31 @@ def parse_model_response(raw_text: str, precog_id: str = "", model_name: str = "
         except Exception:
             pass
 
-    # Fallback heuristic
+    # Fallback heuristic: Fail-Safe parsing
     decision = "REJECT"
-    if re.search(r"\b(ADOPT|APPROVE|YES|採用|合格)\b", clean_text, re.IGNORECASE):
-        decision = "ADOPT"
+
+    # 1. Check for explicit negative keywords first
+    has_negative_keywords = bool(
+        re.search(
+            r"\b(REJECT|DISAPPROVE|DENY|VETO|DISAGREE|見送り|却下|否決|反対|不採用|不合格)\b",
+            clean_text,
+            re.IGNORECASE,
+        )
+    )
+
+    # 2. Check for negated positive expressions (e.g., "do not adopt", "cannot approve")
+    has_negated_approval = bool(
+        re.search(
+            r"\b(NOT|DON'?T|CANNOT|CAN'?T|SHOULDN'?T|WON'?T|NEVER|NO)\s+(ADOPT|APPROVE|PASS|ACCEPT|RECOMMEND)\b",
+            clean_text,
+            re.IGNORECASE,
+        )
+    )
+
+    # 3. Only adopt if explicitly positive and NOT negated
+    if not has_negative_keywords and not has_negated_approval:
+        if re.search(r"\b(ADOPT|APPROVE|YES|採用|合格|推奨)\b", clean_text, re.IGNORECASE):
+            decision = "ADOPT"
 
     conf_match = re.search(r"confidence[^\d]*([0-1]?\.\d+)", clean_text, re.IGNORECASE)
     confidence = float(conf_match.group(1)) if conf_match else 0.70

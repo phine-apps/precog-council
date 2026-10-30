@@ -66,3 +66,14 @@ def test_parse_model_response():
     assert res.decision == "REJECT"
     assert res.confidence == 0.88
     assert "Leak" in res.risk_factors
+
+
+def test_parse_model_response_negation_fallback():
+    # Model said "do not adopt" or "cannot approve" without JSON
+    raw1 = "I strongly recommend DO NOT ADOPT this proposal due to critical memory safety bugs."
+    res1 = parse_model_response(raw1, precog_id="a", model_name="m1")
+    assert res1.decision == "REJECT"
+
+    raw2 = "We cannot approve or pass this patch under any circumstances."
+    res2 = parse_model_response(raw2, precog_id="b", model_name="m2")
+    assert res2.decision == "REJECT"

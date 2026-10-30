@@ -46,8 +46,11 @@ class DirectApiBackend(BaseBackend):
         if not api_key:
             raise RuntimeError("ANTHROPIC_API_KEY not set.")
 
-        resolved = "claude-3-5-sonnet-20241022"
-        if "opus" in model.lower():
+        # Resolve concrete model or fallback to robust defaults
+        resolved = model
+        if model in ["inherit", "default", "claude", "sonnet"] or "sonnet" in model.lower():
+            resolved = "claude-3-5-sonnet-20241022"
+        elif "opus" in model.lower():
             resolved = "claude-3-opus-20240229"
 
         url = "https://api.anthropic.com/v1/messages"
@@ -58,7 +61,7 @@ class DirectApiBackend(BaseBackend):
         }
         payload = {
             "model": resolved,
-            "max_tokens": 2048,
+            "max_tokens": 4096,
             "messages": [{"role": "user", "content": prompt}],
         }
 
@@ -69,15 +72,19 @@ class DirectApiBackend(BaseBackend):
                 return data["content"][0]["text"]
         except urllib.error.HTTPError as e:
             err_body = e.read().decode("utf-8", errors="replace")
-            raise RuntimeError(f"Anthropic API error {e.code}: {err_body}")
+            raise RuntimeError(f"Anthropic API HTTP {e.code}: {err_body}")
+        except (urllib.error.URLError, TimeoutError, OSError) as e:
+            raise RuntimeError(f"Anthropic API connection error: {e}")
 
     def _call_gemini(self, model: str, prompt: str, timeout: int) -> str:
         api_key = os.getenv("GEMINI_API_KEY")
         if not api_key:
             raise RuntimeError("GEMINI_API_KEY not set.")
 
-        resolved = "gemini-1.5-flash"
-        if "pro" in model.lower() or "argon" in model.lower():
+        resolved = model
+        if model in ["inherit", "default", "gemini", "flash"] or "flash" in model.lower():
+            resolved = "gemini-1.5-flash"
+        elif "pro" in model.lower() or "argon" in model.lower():
             resolved = "gemini-1.5-pro"
 
         url = f"https://generativelanguage.googleapis.com/v1beta/models/{resolved}:generateContent?key={api_key}"
@@ -91,12 +98,16 @@ class DirectApiBackend(BaseBackend):
                 return data["candidates"][0]["content"]["parts"][0]["text"]
         except urllib.error.HTTPError as e:
             err_body = e.read().decode("utf-8", errors="replace")
-            raise RuntimeError(f"Gemini API error {e.code}: {err_body}")
+            raise RuntimeError(f"Gemini API HTTP {e.code}: {err_body}")
+        except (urllib.error.URLError, TimeoutError, OSError) as e:
+            raise RuntimeError(f"Gemini API connection error: {e}")
 
     def _call_openai(self, model: str, prompt: str, timeout: int) -> str:
         api_key = os.getenv("OPENAI_API_KEY")
         if not api_key:
             raise RuntimeError("OPENAI_API_KEY not set.")
+
+        resolved = "gpt-4o" if model in ["inherit", "default", "gpt", "openai"] else model
 
         url = "https://api.openai.com/v1/chat/completions"
         headers = {
@@ -104,7 +115,8 @@ class DirectApiBackend(BaseBackend):
             "Content-Type": "application/json",
         }
         payload = {
-            "model": "gpt-4o",
+            "model": resolved,
+            "max_tokens": 4096,
             "messages": [{"role": "user", "content": prompt}],
         }
 
@@ -115,4 +127,6 @@ class DirectApiBackend(BaseBackend):
                 return data["choices"][0]["message"]["content"]
         except urllib.error.HTTPError as e:
             err_body = e.read().decode("utf-8", errors="replace")
-            raise RuntimeError(f"OpenAI API error {e.code}: {err_body}")
+            raise RuntimeError(f"OpenAI API HTTP {e.code}: {err_body}")
+        except (urllib.error.URLError, TimeoutError, OSError) as e:
+            raise RuntimeError(f"OpenAI API connection error: {e}")

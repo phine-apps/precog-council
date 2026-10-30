@@ -128,6 +128,12 @@ def main() -> None:
     parser.add_argument("--model-c", type=str, default=None, help="Model for Precog Dashiell")
     parser.add_argument("--timeout", type=int, default=None, help="Timeout per precog in seconds")
     parser.add_argument("--format", choices=["rich", "markdown", "json"], default=None, help="Output format")
+    parser.add_argument(
+        "--strict",
+        action="store_true",
+        default=None,
+        help="Exit with return code 1 if final council decision is REJECT (ideal for CI/CD gates)",
+    )
 
     args = parser.parse_args()
 
@@ -139,6 +145,7 @@ def main() -> None:
     default_model = args.model or cfg.default_model
     timeout = args.timeout or cfg.timeout
     output_format = args.format or cfg.format
+    strict_mode = args.strict if args.strict is not None else cfg.strict
 
     # Read context
     context = args.context
@@ -233,6 +240,9 @@ def main() -> None:
                     ensure_ascii=False,
                 )
             )
+
+    if strict_mode and verdict.final_decision == "REJECT":
+        sys.exit(1)
 
 
 if __name__ == "__main__":

@@ -33,3 +33,7 @@ timeout: 90
 
 # Default output format: rich (cyber TUI), markdown (for PR/CI), json
 format: rich
+
+# Strict Mode: If true, exits with exit code 1 when final decision is REJECT.
+# Ideal for CI/CD gates, pre-commit hooks, and deployment pipelines.
+strict: false
