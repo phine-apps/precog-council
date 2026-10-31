@@ -87,15 +87,34 @@ pip install precog-council
 
 ---
 
-## 🎯 Domain Presets
+## 🎯 Domain Presets & Custom Roles
 
-Precog Council comes preloaded with tailored analytical roles for different domains (`--domain <name>`):
+### Built-in Presets (`--domain <name>`)
 
-* **`code`**: Algorithm Efficiency vs. Security/Edge Cases vs. Maintainability & Simplicity
+Precog Council comes preloaded with tailored analytical roles for different decision domains:
+
+* **`code`** *(Default)*: Algorithm Efficiency vs. Security/Edge Cases vs. Maintainability & Simplicity
 * **`architecture`**: Scalability & Extensibility vs. Fault-Tolerance/SPOF vs. Operational Cost/Simplicity
 * **`business`**: Market Upside & Opportunity vs. Downside & Legal/Financial Risk vs. Lean Velocity
 * **`feature`**: Market Microstructure & Causality vs. Forward Leakage (`shift(1)`) vs. Noise Filter
 * **`general`**: Strategic Vision vs. Devil's Advocate vs. Pragmatic Realism
+
+### Fully Custom Roles (Anytime, Anywhere)
+
+You are never locked into "Performance / Security / Simplicity". You can customize the 3 lenses freely:
+
+1. **In AI Chat (Claude Code / Cursor / Copilot)**:  
+   Simply tell the agent in plain language:
+   > *"Run precog council with Agatha as Database Performance, Arthur as GDPR Compliance, and Dashiell as Frontend UX."*
+
+2. **In Repository Config (`precog.yaml`)**:  
+   Define team-wide custom roles that run on every PR review:
+   ```yaml
+   precogs:
+     agatha: "Distributed Concurrency in Go"
+     arthur: "Zero-Trust Security & OWASP Top 10"
+     dashiell: "Go Idiomatic Minimalism & Readability"
+   ```
 
 ---
 
