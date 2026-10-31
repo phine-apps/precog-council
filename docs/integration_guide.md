@@ -1,4 +1,4 @@
-# 🔌 Integration Guide: Agent Skills, Claude Code, Antigravity & CI/CD
+# 🔌 Integration Guide: Agent Skills, Codex, Claude Code, Antigravity & CI/CD
 
 This guide walks through integrating **Precog Council** into your existing developer workflow across various environments.
 
@@ -6,7 +6,7 @@ This guide walks through integrating **Precog Council** into your existing devel
 
 ## 1. Universal Agent Skill Installation (`gh skill` & `npx skills`)
 
-Precog Council adheres to the open standard **Agent Skills specification** (`SKILL.md`). You can install it into any supported AI coding agent (Claude Code, Cursor, GitHub Copilot CLI, etc.) with a single command:
+Precog Council adheres to the open standard **Agent Skills specification** (`SKILL.md`). You can install it into any supported AI coding agent (OpenAI Codex, Claude Code, Cursor, GitHub Copilot CLI, etc.) with a single command:
 
 ### Via GitHub CLI (`gh skill`)
 ```bash
@@ -15,6 +15,9 @@ gh skill install <your-github-username>/precog-council --scope user
 
 # Or project-scoped installation
 gh skill install <your-github-username>/precog-council --scope project
+
+# Specifically for OpenAI Codex
+gh skill install <your-github-username>/precog-council --agent codex
 ```
 
 ### Via Vercel Labs Skills CLI (`npx skills`)
@@ -28,7 +31,25 @@ npx skills add <your-github-username>/precog-council
 
 ---
 
-## 2. Claude Code Integration (`claude`)
+## 2. OpenAI Codex Integration (`codex`)
+
+Codex natively discovers skills packaged under `.agents/skills/` or user config.
+
+### Project-Scoped Skill
+Place the skill under `.agents/skills/precog-council/SKILL.md`:
+```bash
+mkdir -p .agents/skills/precog-council
+cp SKILL.md .agents/skills/precog-council/
+```
+
+### Usage in Codex
+- **Automatic Trigger**: Prompting *"Run precog council on this pull request"* automatically loads `SKILL.md` via progressive disclosure.
+- **Explicit Mention**: Use `$precog-council` in Codex prompt to force invocation:
+  > `"$precog-council Evaluate the security and performance of this commit"`
+
+---
+
+## 3. Claude Code Integration (`claude`)
 
 ### Option A: Custom Skill / Command
 Precog Council comes pre-bundled with `.claude/skills/precog-council.md`.

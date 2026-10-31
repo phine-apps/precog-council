@@ -50,17 +50,20 @@ When a 2-vs-1 split occurs, **Precog Council elevates the minority dissent as a 
 
 ### Install as an Agent Skill (`gh skill` or `npx skills`)
 
-If you use AI coding agents like **Claude Code**, **Cursor**, or **GitHub Copilot**, install Precog Council directly as an Agent Skill:
+If you use AI coding agents like **OpenAI Codex**, **Claude Code**, **Cursor**, or **GitHub Copilot**, install Precog Council directly as an Agent Skill:
 
 ```bash
-# Via GitHub CLI (Official Agent Skills)
+# Via GitHub CLI (Official Agent Skills - supports Codex, Claude Code, Copilot, etc.)
 gh skill install <your-github-username>/precog-council
+
+# Specifically for OpenAI Codex
+gh skill install <your-github-username>/precog-council --agent codex
 
 # Or via Vercel Labs Skills CLI
 npx skills add <your-github-username>/precog-council
 ```
 
-Once installed, your AI agent can automatically invoke the 3-Precog Council whenever you ask:
+Once installed, your AI agent can automatically invoke the 3-Precog Council (or via `$precog-council` in Codex) whenever you ask:
 > *"Run precog council on this pull request"*  
 > *"Arbitrate this proposal with precog council and show the minority report"*
 
@@ -118,13 +121,14 @@ You are never locked into "Performance / Security / Simplicity". You can customi
 
 ---
 
-## 🛠️ Cross-Platform Support: Claude & Antigravity
+## 🛠️ Cross-Platform Support: Claude, Codex & Antigravity
 
 Precog Council automatically detects your environment:
 
 1. **Direct API**: Uses `ANTHROPIC_API_KEY`, `GEMINI_API_KEY`, or `OPENAI_API_KEY` directly.
-2. **Claude Code (`claude`)**: Works natively within Claude Code sessions via `claude -p` or `.claude/skills/precog-council.md`.
-3. **Antigravity CLI (`agy`)**: Works seamlessly in Google Antigravity workspaces via `agy -p`.
+2. **OpenAI Codex (`codex`)**: Works natively via standard Agent Skills (`.agents/skills/precog-council/` or `$precog-council`).
+3. **Claude Code (`claude`)**: Works natively within Claude Code sessions via `claude -p` or `.claude/skills/precog-council.md`.
+4. **Antigravity CLI (`agy`)**: Works seamlessly in Google Antigravity workspaces via `agy -p`.
 
 ---
 
