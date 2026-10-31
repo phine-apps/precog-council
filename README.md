@@ -167,8 +167,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v3
-      - run: |
-          git diff origin/${{ github.base_ref }}...HEAD > diff.txt
+      - env:
+          BASE_REF: ${{ github.base_ref }}
+        run: |
+          git diff "origin/$BASE_REF...HEAD" > diff.txt
           uvx precog-council "PR Review" --file diff.txt --domain code --format markdown > report.md
       # Post report.md back to PR comment!
 ```

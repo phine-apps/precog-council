@@ -72,7 +72,7 @@ claude "Run 'uvx precog-council --file auth.py --domain code' and explain the mi
 
 ---
 
-## 2. Google Antigravity Integration (`agy`)
+## 4. Google Antigravity Integration (`agy`)
 
 ### Project-Scoped Skill
 Keep the skill in your project's `.agent/skills/precog-council/SKILL.md`.
@@ -86,7 +86,7 @@ cp -r .agent/skills/precog-council/* ~/.gemini/skills/precog-council/
 
 ---
 
-## 3. GitHub Actions PR Bot Integration
+## 5. GitHub Actions PR Bot Integration
 
 To automatically review every Pull Request in your repository:
 

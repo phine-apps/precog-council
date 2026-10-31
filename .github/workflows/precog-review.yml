@@ -28,9 +28,11 @@ jobs:
           python-version: "3.15"
 
       - name: Extract PR Git Diff
+        env:
+          BASE_REF: ${{ github.base_ref }}
         run: |
           # Capture diff and cap at 2000 lines to prevent token exhaustion / OOM
-          git diff origin/${{ github.base_ref }}...HEAD | head -n 2000 > pr_diff.txt
+          git diff "origin/$BASE_REF...HEAD" | head -n 2000 > pr_diff.txt
 
       - name: Check Available API Keys
         id: check_keys
@@ -56,7 +58,7 @@ jobs:
           PR_TITLE: ${{ github.event.pull_request.title }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
-          uvx precog-council "PR #${PR_NUMBER}: ${PR_TITLE}" \
+          uv run precog-council "PR #${PR_NUMBER}: ${PR_TITLE}" \
             --file pr_diff.txt \
             --domain code \
             --format markdown > precog_report.md

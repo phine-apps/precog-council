@@ -259,7 +259,7 @@ def aggregate_precog_votes(
     for r in results:
         votes[r.decision] = votes.get(r.decision, 0) + 1
 
-    majority_decision = "ADOPT" if votes["ADOPT"] >= votes["REJECT"] else "REJECT"
+    majority_decision = "ADOPT" if votes["ADOPT"] > votes["REJECT"] else "REJECT"
     is_unanimous = (votes["ADOPT"] == len(results)) or (votes["REJECT"] == len(results))
 
     minority_report: Optional[PrecogResult] = None

@@ -69,7 +69,9 @@ class DirectApiBackend(BaseBackend):
         try:
             with urllib.request.urlopen(req, timeout=timeout) as resp:
                 data = json.loads(resp.read().decode("utf-8"))
-                return data["content"][0]["text"]
+                return str(data["content"][0]["text"])
+        except (KeyError, IndexError, TypeError) as e:
+            raise RuntimeError(f"Anthropic API returned unexpected response structure: {e}")
         except urllib.error.HTTPError as e:
             err_body = e.read().decode("utf-8", errors="replace")
             raise RuntimeError(f"Anthropic API HTTP {e.code}: {err_body}")
@@ -95,7 +97,9 @@ class DirectApiBackend(BaseBackend):
         try:
             with urllib.request.urlopen(req, timeout=timeout) as resp:
                 data = json.loads(resp.read().decode("utf-8"))
-                return data["candidates"][0]["content"]["parts"][0]["text"]
+                return str(data["candidates"][0]["content"]["parts"][0]["text"])
+        except (KeyError, IndexError, TypeError) as e:
+            raise RuntimeError(f"Gemini API returned unexpected response structure: {e}")
         except urllib.error.HTTPError as e:
             err_body = e.read().decode("utf-8", errors="replace")
             raise RuntimeError(f"Gemini API HTTP {e.code}: {err_body}")
@@ -124,7 +128,9 @@ class DirectApiBackend(BaseBackend):
         try:
             with urllib.request.urlopen(req, timeout=timeout) as resp:
                 data = json.loads(resp.read().decode("utf-8"))
-                return data["choices"][0]["message"]["content"]
+                return str(data["choices"][0]["message"]["content"])
+        except (KeyError, IndexError, TypeError) as e:
+            raise RuntimeError(f"OpenAI API returned unexpected response structure: {e}")
         except urllib.error.HTTPError as e:
             err_body = e.read().decode("utf-8", errors="replace")
             raise RuntimeError(f"OpenAI API HTTP {e.code}: {err_body}")

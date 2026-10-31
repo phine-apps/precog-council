@@ -153,7 +153,7 @@ def main() -> None:
         try:
             context = Path(args.file).read_text(encoding="utf-8")
         except Exception as e:
-            console.print(f"[bold red]Error reading file {args.file}:[/bold red] {e}", file=sys.stderr)
+            Console(stderr=True).print(f"[bold red]Error reading file {args.file}:[/bold red] {e}")
             sys.exit(1)
 
     # Resolve domain preset
@@ -161,12 +161,15 @@ def main() -> None:
 
     # Resolve models
     models: Dict[str, str] = {}
-    if args.model_a or cfg.model_a:
-        models["precog_a"] = args.model_a or cfg.model_a
-    if args.model_b or cfg.model_b:
-        models["precog_b"] = args.model_b or cfg.model_b
-    if args.model_c or cfg.model_c:
-        models["precog_c"] = args.model_c or cfg.model_c
+    m_a = args.model_a or cfg.model_a
+    if m_a:
+        models["precog_a"] = m_a
+    m_b = args.model_b or cfg.model_b
+    if m_b:
+        models["precog_b"] = m_b
+    m_c = args.model_c or cfg.model_c
+    if m_c:
+        models["precog_c"] = m_c
 
     # Resolve backend
     backend = detect_best_backend(backend_choice)
