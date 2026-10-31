@@ -65,7 +65,7 @@ jobs:
 
       - name: Post Precog Report to PR
         if: steps.check_keys.outputs.has_keys == 'true' && hashFiles('precog_report.md') != ''
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
