@@ -25,7 +25,6 @@ jobs:
           files: dist/*
           generate_release_notes: true
       - name: Publish package distributions to PyPI
-        if: vars.ENABLE_PYPI == 'true' || secrets.PYPI_API_TOKEN != ''
         uses: pypa/gh-action-pypi-publish@release/v1
         continue-on-error: true
         with:
