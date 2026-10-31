@@ -13,6 +13,11 @@ dependencies = [
     "rich>=13.9.4",
 ]
 
+[project.urls]
+Homepage = "https://github.com/phine-apps/precog-council"
+Repository = "https://github.com/phine-apps/precog-council"
+Issues = "https://github.com/phine-apps/precog-council/issues"
+
 [project.scripts]
 precog = "precog_council.cli:main"
 precog-council = "precog_council.cli:main"

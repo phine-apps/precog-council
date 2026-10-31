@@ -11,22 +11,22 @@ Precog Council adheres to the open standard **Agent Skills specification** (`SKI
 ### Via GitHub CLI (`gh skill`)
 ```bash
 # Global user-level installation
-gh skill install <your-github-username>/precog-council --scope user
+gh skill install phine-apps/precog-council --scope user
 
 # Or project-scoped installation
-gh skill install <your-github-username>/precog-council --scope project
+gh skill install phine-apps/precog-council --scope project
 
 # Specifically for OpenAI Codex
-gh skill install <your-github-username>/precog-council --agent codex
+gh skill install phine-apps/precog-council --agent codex
 ```
 
 ### Via Vercel Labs Skills CLI (`npx skills`)
 ```bash
 # Global installation
-npx skills add <your-github-username>/precog-council -g
+npx skills add phine-apps/precog-council -g
 
 # Or local project installation
-npx skills add <your-github-username>/precog-council
+npx skills add phine-apps/precog-council
 ```
 
 ---

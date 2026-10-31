@@ -54,13 +54,13 @@ If you use AI coding agents like **OpenAI Codex**, **Claude Code**, **Cursor**, 
 
 ```bash
 # Via GitHub CLI (Official Agent Skills - supports Codex, Claude Code, Copilot, etc.)
-gh skill install <your-github-username>/precog-council
+gh skill install phine-apps/precog-council
 
 # Specifically for OpenAI Codex
-gh skill install <your-github-username>/precog-council --agent codex
+gh skill install phine-apps/precog-council --agent codex
 
 # Or via Vercel Labs Skills CLI
-npx skills add <your-github-username>/precog-council
+npx skills add phine-apps/precog-council
 ```
 
 Once installed, your AI agent can automatically invoke the 3-Precog Council (or via `$precog-council` in Codex) whenever you ask:
