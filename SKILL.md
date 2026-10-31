@@ -2,7 +2,7 @@
 name: precog-council
 description: |
   Evaluates features, code diffs, architecture designs, or business proposals through a 3-Precog Council (Agatha, Arthur, Dashiell) with distinct analytical lenses, producing a majority consensus and isolating minority dissent.
-  Use when asked to evaluate trade-offs, review complex changes, run arbitration, or "プリコグ合議にかけて".
+  Use when asked to evaluate trade-offs, review complex changes, run arbitration, or "run precog council".
 compatibility: "Requires Python 3.10+, uv or uvx"
 allowed-tools: "Bash(uvx:*,precog:*,precog-council:*,python:*,claude:*,agy:*)"
 metadata:

@@ -62,7 +62,7 @@ npx skills add <your-github-username>/precog-council
 
 Once installed, your AI agent can automatically invoke the 3-Precog Council whenever you ask:
 > *"Run precog council on this pull request"*  
-> *"プリコグ合議にかけてマイノリティ・リポートを出して"*
+> *"Arbitrate this proposal with precog council and show the minority report"*
 
 ### Run Instantly with `uvx` (CLI Standalone)
 

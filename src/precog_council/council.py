@@ -50,25 +50,23 @@ class CouncilVerdict:
     def to_markdown(self) -> str:
         """Render a clean GitHub Flavored Markdown report."""
         unanimous_badge = (
-            "🕊️ **満場一致 (Unanimous Consensus)**"
-            if self.is_unanimous
-            else "⚖️ **意見分裂 (Majority Consensus 2 vs 1)**"
+            "🕊️ **Unanimous Consensus (3 vs 0)**" if self.is_unanimous else "⚖️ **Majority Consensus (2 vs 1 Split)**"
         )
-        decision_badge = "🟢 **ADOPT (採用推奨)**" if self.final_decision == "ADOPT" else "🔴 **REJECT (見送り推奨)**"
+        decision_badge = "🟢 **ADOPT**" if self.final_decision == "ADOPT" else "🔴 **REJECT**"
 
         md = [
-            "# 🏛️ Precog Council 審査レポート",
+            "# 🏛️ Precog Council Evaluation Report",
             "",
-            f"**審査対象 (Topic)**: {self.topic}",
-            f"**審査ドメイン (Domain)**: `{self.domain}`",
+            f"**Topic**: {self.topic}",
+            f"**Domain**: `{self.domain}`",
             "",
-            "### 1. 総合評決 (Council Verdict)",
-            f"* **最終判断**: {decision_badge}" + (" ⚠️ *(VETO 拒絶権発動)*" if self.is_vetoed else ""),
-            f"* **合議状況**: {unanimous_badge} (ADOPT: {self.vote_count.get('ADOPT', 0)} 票 / REJECT: {self.vote_count.get('REJECT', 0)} 票)",
-            f"* **合意確信度 (Consensus Score)**: {self.consensus_score:.1%}",
+            "### 1. Council Verdict",
+            f"* **Final Decision**: {decision_badge}" + (" ⚠️ *(VETO Override Exercised)*" if self.is_vetoed else ""),
+            f"* **Consensus State**: {unanimous_badge} (ADOPT: {self.vote_count.get('ADOPT', 0)} / REJECT: {self.vote_count.get('REJECT', 0)})",
+            f"* **Consensus Confidence**: {self.consensus_score:.1%}",
             "",
-            "### 2. 各プリコグの個別投票 (Individual Ballots)",
-            "| プリコグ | モデル | 担当ロール (検証レンズ) | 判定 | 確信度 |",
+            "### 2. Individual Ballots",
+            "| Precog | Engine | Analytical Lens | Decision | Confidence |",
             "| :--- | :--- | :--- | :---: | :---: |",
         ]
 
@@ -77,57 +75,57 @@ class CouncilVerdict:
             md.append(f"| **{r.name}** | `{r.model}` | {r.role} | {icon} | {r.confidence:.0%} |")
 
         md.append("")
-        md.append("### 3. 各プリコグの詳細見解")
+        md.append("### 3. Detailed Precog Findings")
         for r in self.results:
             md.append(f"#### 👁️ {r.name} ({r.role})")
-            md.append(f"* **判定**: `{r.decision}` (確信度: {r.confidence:.0%})")
+            md.append(f"* **Decision**: `{r.decision}` (Confidence: {r.confidence:.0%})")
             if r.key_points:
-                md.append("* **評価ポイント**:")
+                md.append("* **Key Strengths & Rationale**:")
                 for p in r.key_points:
                     md.append(f"  - {p}")
             if r.risk_factors:
-                md.append("* **懸念・リスク要因**:")
+                md.append("* **Risk Factors & Failure Modes**:")
                 for rf in r.risk_factors:
                     md.append(f"  - {rf}")
-            md.append(f"* **詳細論拠**: {r.reasoning}")
+            md.append(f"* **Detailed Reasoning**: {r.reasoning}")
             md.append("")
 
         if self.is_vetoed and self.veto_reason:
             md.append("---")
-            md.append("## ⛔ 【拒絶権発動】Veto Override")
-            md.append("> [!CAUTION] **指定ロールによる拒絶権（VETO）が行使されました**")
+            md.append("## ⛔ VETO Override Exercised")
+            md.append("> [!CAUTION] **VETO power exercised by designated role**")
             md.append(
-                f"> 多数決は `{self.majority_decision}` でしたが、{self.veto_reason} により最終判断は `REJECT` に上書きされました。"
+                f"> Majority voted `{self.majority_decision}`, but {self.veto_reason} overrode the final decision to `REJECT`."
             )
             md.append("")
 
         if self.minority_report:
             mr = self.minority_report
             md.append("---")
-            md.append("## 🚨 【最重要】マイノリティ・リポート (Minority Report)")
-            md.append(f"> [!WARNING] **少数派予知者 {mr.name} (`{mr.model}`) からの異論・警告**")
+            md.append("## 🚨 【CRITICAL】 Minority Report Detected")
+            md.append(f"> [!WARNING] **Dissenting Precog: {mr.name} (`{mr.model}`)**")
             md.append(
-                f"> 多数派（2名）が `{self.majority_decision}` と判定した一方、{mr.name} は `{mr.decision}`（確信度 {mr.confidence:.0%}）を主張しました。"
+                f"> While the majority (2 precogs) concluded `{self.majority_decision}`, {mr.name} dissented with `{mr.decision}` (Confidence: {mr.confidence:.0%})."
             )
             md.append(
-                "> 映画『マイノリティ・リポート』が示す通り、システムの破綻や致命的な盲点はしばしば少数意見の中に潜んでいます。"
+                "> In mission-critical systems, systemic failures and fatal blind spots often reside within minority dissent."
             )
             md.append("")
-            md.append("### ⚠️ 少数派が警告する致命的リスク要因:")
+            md.append("### ⚠️ Critical Risk Warnings from Dissenting Precog:")
             for rf in mr.risk_factors:
                 md.append(f"1. **{rf}**")
             md.append("")
-            md.append("### 📝 少数派の論拠:")
+            md.append("### 📝 Dissenting Reasoning:")
             md.append(f"> {mr.reasoning}")
             md.append("")
             md.append(
-                "**👉 アクション推奨**: 次のステップに進む前に、上記マイノリティ・リポートの指摘に対する反証またはガードレールを確認してください。"
+                "**👉 Action Required**: Before proceeding, evaluate counter-evidence or mitigations against the minority dissent warnings above."
             )
         elif not self.is_vetoed:
             md.append("---")
-            md.append("## 🕊️ マイノリティ・リポートなし")
+            md.append("## 🕊️ Unanimous Consensus")
             md.append(
-                "全3体のプリコグの見解が完全に一致しました。潜在的な論理の盲点や見落としリスクは極めて低いと推定されます。"
+                "All three precogs reached identical conclusions. Potential for overlooked edge cases or hidden blind spots is estimated to be minimal."
             )
 
         return "\n".join(md)

@@ -41,7 +41,7 @@ cp .claude/skills/precog-council.md ~/.claude/skills/
 
 Inside any Claude Code session, simply prompt:
 > *"Run precog council on this function"*  
-> *"プリコグ合議にかけてマイノリティ・リポートを出して"*
+> *"Arbitrate this proposal with precog council and show the minority report"*
 
 ### Option B: Bash Tool Execution
 Claude Code can also directly invoke the CLI tool:
